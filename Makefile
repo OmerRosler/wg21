@@ -74,9 +74,9 @@ $(PANDOC_DIR):
 	PANDOC_VER=$(PANDOC_VER) PANDOC_DIR=$@ $(DEPSDIR)/install-pandoc.sh
 
 $(PYTHON_DIR): $(DEPSDIR)/requirements.txt $(REQUIREMENTS)
-	python3 -m venv --system-site-packages $(PYTHON_DIR)
-	$@/bin/pip3 install --break-system-packages --upgrade -v pip -r $(DEPSDIR)/requirements.txt 2>&1 | tee /dev/stderr
-	if [ -n "$(REQUIREMENTS)" ]; then $@/bin/pip3 install --break-system-packages --upgrade -v pip -r $(REQUIREMENTS); fi
+	python3 -m venv $(PYTHON_DIR)
+	$@/bin/pip3 install -r $(DEPSDIR)/requirements.txt 2>&1 | tee /dev/stderr
+	if [ -n "$(REQUIREMENTS)" ]; then $@/bin/pip3 install --upgrade -r $(REQUIREMENTS); fi
 	touch $(PYTHON_DIR)
 
 $(DATADIR)/defaults.yaml: $(DATADIR)/defaults.sh
