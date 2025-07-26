@@ -25,8 +25,10 @@ export PATH := $(PANDOC_DIR):$(PYTHON_DIR)/bin:$(PATH)
 
 override DATADIR := $(ROOTDIR)data
 
+override ALL_MD := $(filter-out %/LICENSE.md %/README.md, $(wildcard $(SRCDIR)/*.md))
+
 override define PANDOC
-$(eval override FILE := $(filter %.md, $^))
+$(eval override FILE := $<)
 $(eval override CMD := pandoc $(FILE) -o $@ --mathjax -d $(DATADIR)/defaults.yaml)
 $(eval $(and $(DEFAULTS), override CMD += -d $(DEFAULTS)))
 $(eval $(and $(METADATA), override CMD += --metadata-file $(METADATA)))
@@ -88,5 +90,5 @@ $(DATADIR)/csl.json: $(DATADIR)/refs.py $(PYTHON_DIR)
 $(DATADIR)/annex-f:
 	curl -sSL https://timsong-cpp.github.io/cppwp/annex-f -o $@
 
-$(OUTDIR)/%.html $(OUTDIR)/%.latex $(OUTDIR)/%.pdf: $(SRCDIR)/%.md $(SRCDEPS) $(GENDEPS) | $(OUTDIR)
+$(OUTDIR)/%.html $(OUTDIR)/%.latex $(OUTDIR)/%.pdf: $(SRCDIR)/%.md $(ALL_MD) $(SRCDEPS) $(GENDEPS) | $(OUTDIR)
 	$(PANDOC) --bibliography $(DATADIR)/csl.json
