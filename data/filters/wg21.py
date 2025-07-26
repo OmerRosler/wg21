@@ -94,7 +94,7 @@ def finalize(doc):
 
         # Mark code elements within colored divspan as default.
         if any(isinstance(elem, cls) for cls in [pf.Div, pf.Span]) and \
-           any(cls in elem.classes for cls in ['add', 'rm', 'ednote', 'draftnote']):
+           any(cls in elem.classes for cls in ['add', 'rm', 'ednote', 'draftnote', 'TODO']):
             elem.walk(lambda elem, doc:
                 elem.classes.insert(0, 'default')
                 if any(isinstance(elem, cls) for cls in [pf.Code, pf.CodeBlock])
@@ -354,6 +354,12 @@ def divspan(elem, doc):
         wrap_elem(pf.Str(f'[ {text}: '), elem, pf.Str(' ]'))
         _color('0000ff')
 
+    def TODO():
+        audience = elem.attributes.get('audience')
+        text = 'TODO' + (f' for {audience}' if audience is not None else '')
+        wrap_elem(pf.Str(f'[ {text}: '), elem, pf.Str(' ]'))
+        _color('0000ff')
+
     def add(): _diff('addcolor', 'uline', 'ins')
     def rm():  _diff('rmcolor', 'sout', 'del')
 
@@ -375,11 +381,12 @@ def divspan(elem, doc):
             pf.debug('mpark/wg21: stable name', target, 'not found')
             return link
 
-    note_cls = next(iter(cls for cls in elem.classes if cls in {'example', 'note', 'ednote', 'draftnote'}), None)
+    note_cls = next(iter(cls for cls in elem.classes if cls in {'example', 'note', 'ednote', 'draftnote', 'TODO'}), None)
     if note_cls == 'example':  example()
     elif note_cls == 'note':   note()
     elif note_cls == 'ednote': ednote(); return
     elif note_cls == 'draftnote': draftnote(); return
+    elif note_cls == 'TODO': TODO(); return
 
     diff_cls = next(iter(cls for cls in elem.classes if cls in {'add', 'rm'}), None)
     if diff_cls == 'add':  add()
