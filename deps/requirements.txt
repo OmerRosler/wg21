@@ -4,3 +4,4 @@ lxml
 requests
 pyyaml
 pandoc-include
+pantable

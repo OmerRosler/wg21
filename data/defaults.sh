@@ -18,6 +18,7 @@ data-dir: ${DATADIR}
 
 filters:
   - pandoc-include
+  - pantable
   - citetitle.py
   - citeproc
   - wg21.py
