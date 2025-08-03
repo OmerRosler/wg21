@@ -16,9 +16,75 @@ toc: true
 toc-depth: 2
 ---
 
-# Introduction
+# Fork specific capabilities
 
-This framework provides support for various common elements for C++ papers.
+
+## Changes to the WG21 Filter
+
+We added a new type of note for easy TODO handling that is formatted exactly like _draftnote_ from the baseline repo.
+It formats like this:
+
+[try it]{.TODO}
+
+And written like this:
+```
+[try it]{.TODO}
+```
+
+## Build System
+
+- To make it work with PEP668 we removed the `pip upgrade` commands from the build.
+- We added the new filters to the default file, along with the python requirements file
+- We changed the dependency handling to have all `md` files be dependent on any target. This is to accommodate `pandoc-include`. It would be nice if there was an automated tool to generate the include graph and embed it in the makefile. Natively, `pandoc-include` does not support it. Maybe one can write a python script akin to `toc_depth` to do it manually (but then we'll either have to maintain it, or freeze the version of `pandoc-include`).
+
+## Added Pandoc Filters
+
+### pantable for building tables
+
+Read Full documentation: [link](https://ickc.github.io/pantable/)
+
+Example generated table:
+
+```table
+---
+caption: '*Awesome* **Markdown** Table'
+alignment: RC
+table-width: 2/3
+markdown: True
+---
+First row,defaulted to be header row,can be disabled
+1,cell can contain **markdown**,"It can be aribrary block element:
+
+- following standard markdown syntax
+- like this"
+2,"Any markdown syntax, e.g.",E = mc^2^
+```
+
+From the source code that looks like this:
+```` {.text .not-a-filter-target}
+
+```table
+---
+caption: '*Awesome* **Markdown** Table'
+alignment: RC
+table-width: 2/3
+markdown: True
+---
+First row,defaulted to be header row,can be disabled
+1,cell can contain **markdown**,"It can be aribrary block element:
+
+- following standard markdown syntax
+- like this"
+2,"Any markdown syntax, e.g.",E = mc^2^
+```
+````
+
+### pandoc-include to split the md file
+
+!include test_pandoc_include.md
+
+# Introduction
+hiThis framework provides support for various common elements for C++ papers.
 This document is intended to test various features implemented in [`mpark/wg21`].
 
 [`mpark/wg21`]: https://github.com/mpark/wg21
@@ -388,7 +454,7 @@ There are three supported styles of note:
   [Drafting notes can be used to provide comments for reviewers that are explicitly not to be
    included in the specification.]{.draftnote}
 
-  [It is also possible to indicate the a note is for
+  [It is also possible to indicate the a notes is for
    a specific `audience` via this optional attribute.]{.draftnote audience="the reader"}
 
 # Citation
